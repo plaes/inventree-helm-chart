@@ -48,6 +48,9 @@ spec:
             - name: INVENTREE_SITE_URL
               value: {{ .Values.global.siteUrl -}}
           {{- include "inventree.dbSecrets" . | nindent 12}}
+          #{{/*
+          # Disabled temporary, due to `... does not match the SITE_URL errors`
+          # https://github.com/inventree/InvenTree/issues/10331
           {{- with .Values.livenessProbe }}
           livenessProbe:
             {{- toYaml . | nindent 12 }}
@@ -56,6 +59,7 @@ spec:
           readinessProbe:
             {{- toYaml . | nindent 12 }}
           {{- end }}
+          #*/}}
           {{- with .Values.resources }}
           resources:
             {{- toYaml . | nindent 12 }}

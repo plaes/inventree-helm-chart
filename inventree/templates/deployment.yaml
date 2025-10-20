@@ -44,6 +44,10 @@ spec:
             - name: http
               containerPort: {{ .Values.service.port }}
               protocol: TCP
+          env:
+            - name: INVENTREE_SITE_URL
+              value: {{ .Values.global.siteUrl -}}
+          {{- include "inventree.dbSecrets" . | nindent 12}}
           {{- with .Values.livenessProbe }}
           livenessProbe:
             {{- toYaml . | nindent 12 }}

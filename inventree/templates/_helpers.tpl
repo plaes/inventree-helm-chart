@@ -60,3 +60,22 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{/*
+Render secrets
+*/}}
+{{- define "inventree.dbSecrets" -}}
+{{- range .Values.global.dbSecrets }}
+- name: {{ .name }}
+{{- if .value }}
+  value: {{ .value }}
+{{- else if .valueFrom }}
+  valueFrom:
+    secretKeyRef:
+      name: {{ .valueFrom.secretKeyRef.name }}
+      key: {{ .valueFrom.secretKeyRef.key }}
+{{- else }}
+  {{- fail "Unhandled value, expecting either value for valueFrom"}}
+{{- end }}
+{{- end }}
+{{- end }}

@@ -43,10 +43,30 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 
 {{/*
-Selector labels
+Selector labels - server
 */}}
 {{- define "inventree.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "inventree.name" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
+
+{{/*
+Common labels - worker
+*/}}
+{{- define "inventree.worker.labels" -}}
+helm.sh/chart: {{ include "inventree.chart" . }}
+{{ include "inventree.worker.selectorLabels" . }}
+{{- if .Chart.AppVersion }}
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- end }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- end }}
+
+{{/*
+Selector labels - worker
+*/}}
+{{- define "inventree.worker.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "inventree.name" . }}-worker
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 

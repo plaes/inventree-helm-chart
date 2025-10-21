@@ -23,6 +23,22 @@ spec:
         {{- toYaml . | nindent 8 }}
         {{- end }}
     spec:
+      initContainers:
+        - name: init
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ['/bin/sh', '-c']
+          args:
+            - >
+              invoke migrate &&
+              invoke static
+          volumeMounts:
+            - name: inventree-data
+              mountPath: /home/inventree/data
+          env:
+            - name: INVENTREE_SITE_URL
+              value: {{ .Values.global.siteUrl -}}
+          {{- include "inventree.dbSecrets" . | nindent 12}}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}

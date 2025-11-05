@@ -8,6 +8,12 @@ replicaCount: 1
 global:
   # Base URL for the InvenTree server. Make sure to override!
   siteUrl: "http://inventree.local"
+  # Secret name which contains credentials for Inventree Administrator Account,
+  # with following required keys:
+  # - INVENTREE_ADMIN_USER
+  # - INVENTREE_ADMIN_PASSWORD
+  # - INVENTREE_ADMIN_EMAIL
+  adminSecret: ""
   # Database configuration and credentials
   dbSecrets: []
   # Specify environment variables either by {name, value}:

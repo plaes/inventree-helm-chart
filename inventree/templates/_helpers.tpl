@@ -99,3 +99,62 @@ Render secrets
 {{- end }}
 {{- end }}
 {{- end }}
+
+{{/*
+Determine a recourse name based on Helm values
+*/}}
+{{- define "lib.determineResourceNameFromValues" -}}
+  {{- $rootContext := .rootContext -}}
+  {{- $id := .id -}}
+  {{- $objectValues := .values -}}
+  {{- $itemCount := .itemCount -}}
+
+  {{- $objectName := (include "inventree.fullname" $rootContext) -}}
+
+  {{- if $objectValues.forceRename -}}
+    {{- $objectName = tpl $objectValues.forceRename $rootContext -}}
+  {{- else -}}
+    {{- if not (empty $objectValues.prefix) -}}
+      {{- $renderedPrefix := (tpl $objectValues.prefix $rootContext) -}}
+      {{- if not (eq $objectName $renderedPrefix) -}}
+        {{- $objectName = printf "%s-%s" $renderedPrefix $objectName -}}
+      {{- end -}}
+    {{- end -}}
+
+    {{- if not (empty $itemCount) -}}
+      {{- if or (gt $itemCount 1) -}}
+        {{- if and
+          (not (hasSuffix (printf "-%s" $id) $objectName))
+          (not (eq $id $objectName))
+        -}}
+          {{- $objectName = printf "%s-%s" $objectName $id -}}
+        {{- end -}}
+      {{- end -}}
+    {{- end -}}
+
+    {{- if not (empty $objectValues.suffix) -}}
+      {{- $renderedSuffix := (tpl $objectValues.suffix $rootContext) -}}
+      {{- if not (hasSuffix (printf "-%s" $renderedSuffix) $objectName) -}}
+        {{- $objectName = printf "%s-%s" $objectName $renderedSuffix -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+  {{- $objectName | lower -}}
+{{- end -}}
+
+{{/*
+Convert values to an object
+*/}}
+{{- define "lib.valuesToObject" -}}
+  {{- $rootContext := .rootContext -}}
+  {{- $id := .id -}}
+  {{- $objectValues := .values -}}
+  {{- $itemCount := .itemCount -}}
+
+  {{- $objectName := (include "lib.determineResourceNameFromValues" (dict "rootContext" $rootContext "id" $id "values" $objectValues "itemCount" $itemCount)) -}}
+
+  {{- $_ := set $objectValues "name" $objectName -}}
+  {{- $_ := set $objectValues "identifier" $id -}}
+
+  {{- $objectValues | toYaml -}}
+{{- end -}}

@@ -84,21 +84,21 @@ Create the name of the service account to use
 {{/*
 Render secrets
 */}}
-{{- define "inventree.dbSecrets" -}}
-{{- range .Values.global.dbSecrets }}
-- name: {{ .name }}
-{{- if .value }}
-  value: {{ .value }}
-{{- else if .valueFrom }}
-  valueFrom:
-    secretKeyRef:
-      name: {{ .valueFrom.secretKeyRef.name }}
-      key: {{ .valueFrom.secretKeyRef.key }}
-{{- else }}
-  {{- fail "Unhandled value, expecting either value for valueFrom"}}
-{{- end }}
-{{- end }}
-{{- end }}
+{{- define "inventree.renderSecrets" -}}
+  {{- range .data }}
+  - name: {{ .name }}
+  {{- if .value }}
+    value: {{ .value }}
+  {{- else if .valueFrom }}
+    valueFrom:
+      secretKeyRef:
+        name: {{ .valueFrom.secretKeyRef.name }}
+        key: {{ .valueFrom.secretKeyRef.key }}
+  {{- else -}}
+    {{- fail "Unhandled value, expecting either value for valueFrom" -}}
+  {{ end -}}
+  {{ end -}}
+{{- end -}}
 
 {{/*
 Determine a recourse name based on Helm values

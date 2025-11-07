@@ -48,8 +48,8 @@ spec:
           env:
             - name: INVENTREE_SITE_URL
               value: {{ .Values.global.siteUrl -}}
-          {{- include "inventree.dbSecrets" . | nindent 12}}
-          #{{/*
+          {{- (include "inventree.renderSecrets" (dict "data" .Values.global.dbSecrets)) | nindent 10 -}}
+          {{/*
           # TODO: Figure out a way to check status
           {{- with .Values.worker.livenessProbe }}
           livenessProbe:

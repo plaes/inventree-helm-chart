@@ -16,6 +16,19 @@ global:
   # - INVENTREE_ADMIN_EMAIL
   adminSecret: ""
 
+  # Cache (redis or valkey) configuration and credentials
+  cacheSecrets: []
+  # Example:
+  # Secrets can be specified either by {name, value}:
+  # - name: INVENTREE_CACHE_HOST
+  #   value: valkey.database
+  # Or by referencing values from pre-existing secrets:
+  # - name: INVENTREE_CACHE_PASSWORD
+  #   valueFrom:
+  #     secretKeyRef:
+  #       name: "valkey-inventree-creds"
+  #       key: password
+
   # Database configuration and credentials
   dbSecrets: []
   # Example:

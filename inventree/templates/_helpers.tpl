@@ -96,8 +96,8 @@ Render secrets
         key: {{ .valueFrom.secretKeyRef.key }}
   {{- else -}}
     {{- fail "Unhandled value, expecting either value for valueFrom" -}}
-  {{ end -}}
-  {{ end -}}
+  {{- end -}}
+  {{- end -}}
 {{- end -}}
 
 {{/*

@@ -37,7 +37,7 @@ spec:
               mountPath: /home/inventree/data
           env:
             - name: INVENTREE_SITE_URL
-              value: {{ .Values.global.siteUrl -}}
+              value: {{ .Values.global.siteUrl }}
           {{- (include "inventree.renderSecrets" (dict "data" .Values.global.dbSecrets)) | nindent 10 -}}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -62,7 +62,12 @@ spec:
               protocol: TCP
           env:
             - name: INVENTREE_SITE_URL
-              value: {{ .Values.global.siteUrl -}}
+              value: {{ .Values.global.siteUrl }}
+            {{- if not (empty .Values.global.cacheSecrets) }}
+            - name: INVENTREE_CACHE_ENABLED
+              value: "True"
+            {{- end -}}
+          {{- (include "inventree.renderSecrets" (dict "data" .Values.global.cacheSecrets)) | nindent 10 -}}
           {{- (include "inventree.renderSecrets" (dict "data" .Values.global.dbSecrets)) | nindent 10 -}}
           {{- if .Values.global.adminSecret }}
           envFrom:

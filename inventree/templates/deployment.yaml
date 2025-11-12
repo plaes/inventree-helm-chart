@@ -67,6 +67,10 @@ spec:
             - name: INVENTREE_CACHE_ENABLED
               value: "True"
             {{- end -}}
+            {{- if .Values.plugins.enabled }}
+            - name: INVENTREE_PLUGINS_ENABLED
+              value: "True"
+            {{- end }}
           {{- (include "inventree.renderSecrets" (dict "data" .Values.global.cacheSecrets)) | nindent 10 -}}
           {{- (include "inventree.renderSecrets" (dict "data" .Values.global.dbSecrets)) | nindent 10 -}}
           {{- if .Values.global.adminSecret }}

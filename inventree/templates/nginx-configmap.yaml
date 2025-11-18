@@ -37,12 +37,20 @@ data:
           add_header Cache-Control "public";
         }
 
-        # TODO: media requires auth...
-        #location /media/ {
-        #  alias /var/www/media/;
-        #  # Media files require user authentication
-        #  auth_request /auth;
-        #}
+        # Media files require user authentication
+        location /media/ {
+          alias /var/www/media/;
+          auth_request /auth;
+        }
+
+        location /auth {
+          internal;
+
+          proxy_pass http://127.0.0.1:{{ $.Values.service.port }}/auth/;
+          proxy_pass_request_body off;
+          proxy_set_header Content-Length "";
+          proxy_set_header X-Original-URI $request_uri;
+        }
 
         location / {
           # checks for static file, if not found proxy to app
